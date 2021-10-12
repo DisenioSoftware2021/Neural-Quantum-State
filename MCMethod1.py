@@ -5,7 +5,7 @@
 
 
 import numpy as np
-import Probcondicional1 as cond
+import probcondicional1 as cond
 import quantumodel1 as quam
 
 

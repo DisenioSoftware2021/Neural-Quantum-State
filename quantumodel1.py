@@ -5,15 +5,18 @@
 
 
 import numpy as np
+
 import NQS
+
 import hamiltonian as hm
-import Probcondicional1 as cond
+
+import probcondicional1 as cond
 
 
 # In[3]:
 
 
-class Quantummodel:
+class QuantumModel:
     def __init__(self, nqs, ham, condi):
 
         self.nqs = nqs
@@ -31,7 +34,7 @@ class Quantummodel:
         self.parameters = (
             self.n_visible + self.n_hidden + self.n_visible * self.n_hidden
         )
-        self.sig = nqs.sig
+        self.sigma = nqs.sigma
 
         self.energy_gradient = np.zeros(self.parameters)
 
@@ -42,87 +45,76 @@ class Quantummodel:
         self.local_energy_squared = 0
         self.accept_count = 0
 
-        self.dPsi1 = np.zeros(self.parameters)
-        self.energy_dPsi = np.zeros(self.parameters)
+        self.derivate_psi1 = np.zeros(self.parameters)
+        self.energy_derivative_psi = np.zeros(self.parameters)
 
-    def setupsampling(self, x):
+    def set_up_sampling(self, x):
         # The function sets up the model for a Monte Carlo simulation.
 
-        self.Qsigm = self.nqs.sigmoid(x)
+        self.sigmoid = self.nqs.sigmoid(x)
 
         self.psi = self.nqs.psi(x)
-        self.loc_energy = self.ham.LocalEnergy(self.nqs)
+        self.loc_energy = self.ham.local_energy(self.nqs)
 
-        self.lap = self.nqs.laplacianalfa(x)
+        self.lap = self.nqs.laplacian_alfa(x)
 
         return self.psi, self.loc_energy, self.lap
 
-    def acumulador(self, x):
+    def accumulator(self, x):
 
-        self.lap = self.nqs.laplacianalfa(x)
-        self.loc_energy = self.ham.LocalEnergy(self.nqs)
+        self.lap = self.nqs.laplacian_alfa(x)
+        self.loc_energy = self.ham.local_energy(self.nqs)
 
-        self.local_energy += self.locenergy
-        self.local_energy_squared += self.locenergy * self.locenergy
+        self.local_energy += self.loc_energy
+        self.local_energy_squared += self.loc_energy * self.loc_energy
 
-        self.dPsi1 += self.lap
-        self.energy_dPsi += self.lap * self.loc_energy
+        self.derivate_psi1 += self.lap
+        self.energy_derivative_psi += self.lap * self.loc_energy
 
         return (
             self.local_energy,
             self.local_energy_squared,
-            self.dPsi1,
-            self.energy_dPsi,
+            self.derivate_psi1,
+            self.energy_derivative_psi,
         )
 
-    def valormedio(self, nro_samples):
-        self.local_energy = self.local_energy / nro_samples
-        self.local_energy_squared = self.local_energy_squared / nro_samples
+    def average_value(self, sample_number):
+        self.local_energy = self.local_energy / sample_number
+        self.local_energy_squared = self.local_energy_squared / sample_number
         # self.acceptcount =self.acceptcount/nrosamples
-        self.dPsi1 = self.dPsi1 / nro_samples
-        self.energy_dPsi = self.energy_dPsi / nro_samples
+        self.derivate_psi1 = self.derivate_psi1 / sample_number
+        self.energy_derivative_psi = self.energy_derivative_psi / sample_number
 
-        self.var = (
+        self.variance = (
             self.local_energy_squared - self.local_energy * self.local_energy
-        ) / nro_samples
+        ) / sample_number
 
-        self.loc_en_gradient = 2 * (self.energy_dPsi - self.local_energy * self.dPsi1)
-        self.loc_en_gradient_norm = np.sqrt(
-            np.dot(self.loc_en_gradient, self.loc_en_gradient)
+        self.loc_energy_gradient = 2 * (self.energy_derivative_psi - self.local_energy * self.derivate_psi1)
+        self.loc_energy_gradient_norm = np.sqrt(
+            np.dot(self.loc_energy_gradient, self.loc_energy_gradient)
         )
 
-    def one_bd(self, x, r_min, r_max, bin_width, one_bd, ratio):
-        for p in range(0, self.n_visible, self.n_dim):
-            r = 0
-            for d in range(0, self.n_dim):
-                r += x[p + d] * x[p + d]
-            r = np.sqrt(r)
-            if r_min <= r and r < r_max:
-                bin_index = int(np.floor((r - r_min) / bin_width))
-                one_bd[bin_index] += 1
-                ratio[bin_index] = r
-
-    def shiftparameters(self, shift):
+    def shift_parameters(self, shift):
         # The function updates the network parameters by adding a given shift.
         # It is used by the gradient descent method.
-        for i in range(0, self.n_visible):
+        for i in range(self.n_visible):
             self.a[i] = self.a[i] + shift[i]
-        for j in range(0, self.n_hidden):
+        for j in range(self.n_hidden):
             self.b[j] = self.b[j] + shift[self.n_visible + j]
         k = self.n_visible + self.n_hidden
-        for i in range(0, self.n_visible):
-            for j in range(0, self.n_hidden):
+        for i in range(self.n_visible):
+            for j in range(self.n_hidden):
                 self.w[i, j] = self.w[i, j] + shift[k]
                 k = k + 1
 
-    def newparameters(self, best):
-        for i in range(0, self.n_visible):
+    def new_parameters(self, best):
+        for i in range(self.n_visible):
             self.a[i] = best[i]
-        for j in range(0, self.n_hidden):
+        for j in range(self.n_hidden):
             self.b[j] = best[j + self.n_visible]
         k = self.n_visible + self.n_hidden
-        for i in range(0, self.n_visible):
-            for j in range(0, self.n_hidden):
+        for i in range(self.n_visible):
+            for j in range(self.n_hidden):
                 self.w[i, j] = best[k]
                 k = k + 1
 
@@ -130,10 +122,10 @@ class Quantummodel:
         return best
 
     def get_gradient(self):
-        return self.loc_en_gradient
+        return self.loc_energy_gradient
 
     def get_gradient_norm(self):
-        return self.loc_en_gradient_norm
+        return self.loc_energy_gradient_norm
 
 
 # In[ ]:
