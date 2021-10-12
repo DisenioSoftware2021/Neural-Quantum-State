@@ -6,7 +6,7 @@
 
 import numpy as np
 
-import NQS
+import nqs
 
 import hamiltonian as hm
 
