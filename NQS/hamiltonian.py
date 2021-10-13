@@ -5,45 +5,42 @@
 
 
 import numpy as np
-import NQS
-
 
 # In[10]:
 
 
-class hamiltoniano:
-    
-    def __init__(self,omega,includeinteraction):
+class Hamiltonian:
+    def __init__(self, omega, include_interaction):
 
-        self.includeinteraction=includeinteraction
-        self.omega    =omega
+        self.include_interaction = include_interaction
+        self.omega = omega
 
-    def OscPotential(self,x): 
-    #La funcion calcula la energia potencial del oscilador armonico del sistema dada una configuracion de las particulas del sistema
-   
-        self.harmonicosc=np.dot(self.omega*self.omega*x,x)
-        return self.harmonicosc
-    
- 
-    def LocalEnergy(self,nqs): 
-    #La funcion computa la energia del sistema descripta por la funcion de onda del objeto NQS, y de acuerdo al tipo de hamiltoniano
-    #que elija
-    
-        harmonicoscillator =self.OscPotential(nqs.x)#self.harmonicosc
-        kinetic            =nqs.Laplacian(nqs.x)
-        
-        localEnergy        = 0.5*(kinetic + harmonicoscillator);
-        
-        if (self.includeinteraction=="osc_armonico"):
-            localEnergy=localEnergy
-        elif (self.includeinteraction=="coulomb"):
-            localEnergy          += np.sum(nqs.Inversedistance(nqs.x))
-        elif (self.includeinteraction=="calogero"):
-             localEnergy          +=2.1*nqs.calogero(nqs.x)
+    def potential_oscillator(self, x):
+        # The function calculates the potential energy of the harmonic
+        # oscillator of the system  for a given configuration of the
+        # particles of the system
+
+        self.harmonic_oscillator = np.dot(self.omega * self.omega * x, x)
+        return self.harmonic_oscillator
+
+    def local_energy(self, nqs):
+        # The function computes the energy of the system described by
+        # the wave function of the NQS object, and according to the
+        # type of Hamiltonian you choose
+
+        harmonic_oscillator = self.potential_oscillator(nqs.x)
+        # self.harmonicosc
+        kinetic = nqs.laplacian(nqs.x)
+
+        local_energy = 0.5 * (kinetic + harmonic_oscillator)
+
+        if self.include_interaction == "harmonic_oscillator":
+            local_energy = local_energy
+        elif self.include_interaction == "coulomb":
+            local_energy += np.sum(nqs.inverse_distance(nqs.x))
+        elif self.include_interaction == "calogero":
+            local_energy += nqs.calogero(nqs.x)
         else:
-        	print("error")
-        	exit      
-        return localEnergy
-
-
-
+            print("error")
+            exit
+        return local_energy
