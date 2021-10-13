@@ -9,7 +9,7 @@ import gradient as gradi
 import hamiltonian as hm
 import mcmethod as mcm
 import nqs
-import probcondicional1 as cond
+import condprobability1 as cond
 import quantumodel1 as quam
 import trainer
 
@@ -20,7 +20,8 @@ import trainer
 # The parameters that the algorithm needs are established.
 # harmonic oscillator frequency: omega,
 # variance of initial gaussian: sigma,
-# type of interaction: "osc_armonico", "coulomb" or "calogero",
+# type of interaction, "harmonic_oscillator",
+# "coulomb" or "calogero": coulomb_interaction,
 # initial distribution of weights and bias: "normal" or "uniform",
 # number of particles: n_particles,
 # number of dimensions: n_dimensions,
@@ -44,7 +45,7 @@ seed_2 = np.random.seed()
 account = 0
 
 # Trainer
-# The type of optimization "adam" or "simple",
+# The type of optimization, "adam" or "simple",
 # is chosen: minimizer_type.
 # The number of times the method will be performed
 # is indicated: n_iterations.
