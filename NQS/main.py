@@ -5,11 +5,11 @@ import time
 
 import numpy as np
 
+import condprobability1 as cond
 import gradient as gradi
 import hamiltonian as hm
 import mcmethod as mcm
 import nqs
-import condprobability1 as cond
 import quantumodel1 as quam
 import trainer
 
