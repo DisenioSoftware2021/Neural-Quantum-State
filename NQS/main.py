@@ -2,12 +2,12 @@
 
 
 import numpy as np
-import NQS
+import nqs
 import hamiltonian as hm
 import quantumodel1 as quam
-import MCMethod1 as MCM
+import mcmethod as MCM
 import gradiente as gradi
-import Probcondicional1 as cond
+import probcondicional1 as cond
 import trainer
 import time
 #import GA1
