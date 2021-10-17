@@ -3,45 +3,42 @@
 
 # In[1]:
 
-
-import numpy 
-
-
 # In[3]:
 
 
-class trainer:
-    def __init__(self,nqs,hm,qm,MC,grad,nro_iterations,optimizador):
-            self.nqs=nqs
-            self.hm=hm
-            self.qm=qm
-            self.MC=MC
-            self.grad=grad
-            self.nro_iterations=nro_iterations
-            self.optimizador=optimizador
-    def train(self,nrosamples):
-        #La funcion entrena a la red
+class Trainer:
+    def __init__(self, nqs, hm, qm, mc, grad, nro_iterations, optimizer):
+        self.nqs = nqs
+        self.hm = hm
+        self.qm = qm
+        self.mc = mc
+        self.grad = grad
+        self.nro_iterations = nro_iterations
+        self.optimizer = optimizer
+
+    def train(self, nro_samples):
+        # The function trains the network
+
         self.grad.setup()
-        
-        for i in range (0,self.nro_iterations):
-            
-            self.MC.runMC(nrosamples,i)
-            
-            if self.optimizador=="simple":
-                shift=self.grad.parametershift(qm.getGradient()) #doy como parametro el gradiente de energia, y calculo DGS
-                self.qm.shiftparameters(shift) #actualizo los pesos y bias
-                
-            elif self.optimizador=="adam":
-                shift=self.grad.adam(self.qm.getGradient(),i+1) #doy como parametro el gradiente de energia, y calculo adam
-                self.qm.shiftparameters(shift) # actualizo los pesos y bias
+
+        for i in range(0, self.nro_iterations):
+
+            self.mc.run_mc(nro_samples, i)
+
+            if self.optimizer == "simple":
+                shift = self.grad.parameter_shift(
+                    self.qm.get_gradient()
+                )  # I give as a parameter the energy gradient, and I calculate DGS
+                self.qm.shift_parameters(shift)  # I update the weights and bias
+
+            elif self.optimizer == "adam":
+                shift = self.grad.adam(
+                    self.qm.get_gradient(), i + 1
+                )  # I give as a parameter the energy gradient, and I calculate Adam
+                self.qm.shift_parameters(shift)  # I update the weights and bias
             else:
                 exit
-                    #self.MC.runMC(int(1e6),1)
-        print(self.MC.contador)
-
+                # self.mc.run_mc(int(1e6),1)
+        print(self.mc.account)
 
 # In[ ]:
-
-
-
-

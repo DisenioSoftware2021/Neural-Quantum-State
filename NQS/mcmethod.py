@@ -3,53 +3,48 @@
 
 # In[4]:
 
-
-import numpy as np
-import probcondicional1 as cond
-import quantumodel1 as quam
-
-
 # In[5]:
-
+ 
 
 class MCMethod:
-    def __init__(self,qm,seed):
-        self.condi=qm.condi
-        self.qm=qm
-        self.seed=seed
-        self.contador=0
-    def runMC(self,nrosamples,nro):
-        onebdd=False
-        
+    def __init__(self, qm, seed):
+        self.condi = qm.condi
+        self.qm = qm
+        self.seed = seed
+        self.account = 0
+
+    def run_mc(self, sample_number, nro):
         self.qm.zzero()
-        self.qm.setupsampling(self.qm.condi.x)
-        
-        effectiveNsamples=0
-        #file=open("gd_05_large.txt","a")
-        equilibration=False
-        
-        for sample in range(0,nrosamples):
+        self.qm.set_up_sampling(self.qm.condi.x)
+
+        effective_n_samples = 0
+        # file=open("gd_05_large.txt","a")
+        equilibration = False
+
+        for sample in range(0, sample_number):
             self.qm.condi.gibbs(self.seed)
-            equilibration=False
-            if sample> 0.1*nrosamples: #empiezo a calcular los valores de energia 
-                equilibration=True
-            if equilibration==True:
-                self.qm.acumulador(self.qm.condi.x)
-                #file.writelines(str(self.qm.localEnergy))
-                
-                effectiveNsamples+=1
-        
-        self.qm.valormedio(effectiveNsamples) #obtengo el valor medio de la energia, y calculo la varianza y el gradiente
-        
-    
-        print(f"valor de E= {self.qm.localEnergy:0.9f}",self.qm.locengradientnorm,nro)
-        #file.write(f"{self.qm.localEnergy:0.7f}"+"  "+f"{self.qm.var:0.7e}"+"  "+f"{np.sqrt(self.qm.var):0.7e}"+"  "+f"{self.qm.locengradientnorm:0.7f}"+"  "+f"{np.abs(self.qm.localEnergy-2):0.7f}"+"  "+"  "+str(nro)+"\n")
-        
-        if self.qm.localEnergy<2.: #contador que te permite ver cuando estas por debajo del valor de energia deseado
-            
-           self.contador+=1
+            equilibration = False
+            # Begins to calculate the energy values
 
+            if sample > (0.1 * sample_number):  
+                equilibration = True
+            if equilibration is True:
+                self.qm.accumulator(self.qm.condi.x)
+                # file.writelines(str(self.qm.local_energy))
 
+                effective_n_samples += 1
 
+        self.qm.average_value(
+            effective_n_samples
+        )  # Obtain the mean value of the energy and calculate the variance and gradient
 
+        print(f"valor de E= {self.qm.local_energy:0.9f}", self.qm.loc_energy_gradient_norm, nro)
+        # file.write(f"{self.qm.local_energy:0.7f}"+"  "+f"{self.qm.var:0.7e}"+"  "+
+        # f"{np.sqrt(self.qm.var):0.7e}"+"  "+f"{self.qm.loc_energy_gradient_norm:0.7f}"+"  "
+        # +f"{np.abs(self.qm.local_energy-2):0.7f}"+"  "+"  "+str(nro)+"\n")
 
+        if (
+            self.qm.local_energy < 2.0
+        ):  # Counter that allows you to see when you are below the desired energy value
+
+            self.account += 1
