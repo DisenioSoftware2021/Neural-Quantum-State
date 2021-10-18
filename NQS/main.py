@@ -1,66 +1,81 @@
 # In[1]:
 
 
-import numpy as np
-import nqs
-import hamiltonian as hm
-import quantumodel1 as quam
-import mcmethod as MCM
-import gradiente as gradi
-import probcondicional1 as cond
-import trainer
 import time
-#import GA1
+
+import numpy as np
+
+import condprobability1 as cond
+import gradient as gradi
+import hamiltonian as hm
+import mcmethod as mcm
+import nqs
+import quantumodel1 as quam
+import trainer
+
+# import GA1
 
 
 # In[2]:
-#Se pasan los parámetros que el algoritmo necesita, omega es la frecuencia del oscilador armónico, sigma es varianza de mi gaussiana incial, el tipo de interaccion "osc_armonico", "coulomb" o "calogero",la distribucion incial de los pesos y bias "normal" o "uniforme", cantidad de particulas y dimension (unidades visibles=nro de particulas+dimension) y el numero de unidades ocultas.
+# The parameters that the algorithm needs are established.
+# harmonic oscillator frequency: omega,
+# variance of initial gaussian: sigma,
+# type of interaction, "harmonic_oscillator",
+# "coulomb" or "calogero": coulomb_interaction,
+# initial distribution of weights and bias: "normal" or "uniform",
+# number of particles: n_particles,
+# number of dimensions: n_dimensions,
+# (number of visible units=n_particles+n_dimensions)
+# number of hidden units: n_hidden.
 
-#model
-Omega                    = 1.0
-sigma                    = 1/np.sqrt(2*Omega)
-coulombinteraction       = "coulomb" 
-nqsInitialization        = "normal"
-nParticles               = 2
-nDimensions              = 2
-nHidden                  = 4
-seed1                    =np.random.seed()
+# model
+omega = 1.0
+sigma = 1 / np.sqrt(2 * omega)
+coulomb_interaction = "harmonic_oscillator"
+nqs_initialization = "normal"
+n_particles = 2
+n_dimensions = 2
+n_hidden = 4
+seed_1 = np.random.seed()
+d = 0
+# Method
+# The number of Gibbs samples to be performed is indicated
+number_of_samples = int(1e5)
+seed_2 = np.random.seed()
+account = 0
 
-#Method
-#Se indica la cantidad de sampleos de Gibbs que se va a realizar
-numberOfSamples = int(1e5)
-seed2           = np.random.seed()
-contador        =0
-
-#Trainer
-#Se elige el tipo de optmizacion "adam","simple", de ahi indicamos la cantidad de veces que vamos a realizar el metodo, incluimos el valor del learningrate y gamma que esta asociado al momento (solo si elijo la opcion "simple").
-minimizertype   = "adam"
-nIterations     = 200;
-learningrate    = 0.5;
-gamma           = 0.0;
-
-
+# Trainer
+# The type of optimization, "adam" or "simple",
+# is chosen: minimizer_type.
+# The number of times the method will be performed
+# is indicated: n_iterations.
+# The value of the learning rate is specified: learning_rate.
+# The gamma value associated with the moment is indicated: gamma,
+# (if the type of optimization chosen is "adam", gamma=0.0).
+minimizer_type = "adam"
+n_iterations = 200
+learning_rate = 0.5
+gamma = 0.0
 
 
 # In[3]:
-#llamo a las clases y ejecuto mi programa con los parametros especificados anteriormente.
+# The classes are called and the program is executed with the parameters
+# specified above.
 
-nqs=NQS.NQS(nHidden,nDimensions,nParticles,sigma)
-grad=gradi.gradiente(learningrate,gamma,nqs)
+qs = nqs.NQS(n_hidden, n_dimensions, n_particles, sigma,d)
+grad = gradi.Gradient(learning_rate, gamma, qs)
 
-nqspositive=cond.NQSpositive(nqs)
-ham=hm.hamiltoniano(Omega,coulombinteraction)
-qm=quam.Quantummodel(nqs,ham,nqspositive)
-MC=MCM.MCMethod(qm,np.random.seed())
-nqs.initi(nqsInitialization,seed1)
-#ga=GA1.genetic(nqs,qm)
-t=trainer.trainer(nqs,ham,qm,MC,grad,nIterations,minimizertype)
-tic=time.perf_counter()
-t.train(numberOfSamples)
-toc=time.perf_counter()
-print(contador)
+nqs_positive = cond.NQSpositive(qs)
+ham = hm.Hamiltonian(omega, coulomb_interaction)
+qm = quam.QuantumModel(qs, ham, nqs_positive)
+mc = mcm.MCMethod(qm, np.random.seed())
+qs.initi(nqs_initialization, seed_1)
+t = trainer.Trainer(qs, ham, qm, mc, grad, n_iterations, minimizer_type)
+tic = time.perf_counter()
+t.train(number_of_samples)
+toc = time.perf_counter()
+print(account)
 print(f"Duracion total= {toc - tic:0.4f} seconds")
-
 
 
 
