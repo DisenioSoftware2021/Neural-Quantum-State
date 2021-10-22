@@ -44,3 +44,7 @@ class Hamiltonian:
             print("error")
             exit
         return local_energy
+
+        self.harmonic_oscillator = np.dot(self.omega * self.omega * x, x)
+        return self.harmonic_oscillator
+

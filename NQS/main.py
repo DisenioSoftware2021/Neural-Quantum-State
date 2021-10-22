@@ -31,13 +31,13 @@ import trainer
 # model
 omega = 1.0
 sigma = 1 / np.sqrt(2 * omega)
-coulomb_interaction = "coulomb"
+coulomb_interaction = "harmonic_oscillator"
 nqs_initialization = "normal"
 n_particles = 2
 n_dimensions = 2
 n_hidden = 4
 seed_1 = np.random.seed()
-
+d = 0
 # Method
 # The number of Gibbs samples to be performed is indicated
 number_of_samples = int(1e5)
@@ -62,17 +62,20 @@ gamma = 0.0
 # The classes are called and the program is executed with the parameters
 # specified above.
 
-nqs = nqs.nqs(n_hidden, n_dimensions, n_particles, sigma)
-grad = gradi.gradient(learning_rate, gamma, nqs)
+qs = nqs.NQS(n_hidden, n_dimensions, n_particles, sigma,d)
+grad = gradi.Gradient(learning_rate, gamma, qs)
 
-nqs_positive = cond.NQSpositive(nqs)
-ham = hm.hamiltonian(omega, coulomb_interaction)
-qm = quam.Quantummodel(nqs, ham, NQSpositive)
-mc = mcm.mcmethod(qm, np.random.seed())
-nqs.initi(nqs_initialization, seed_1)
-t = trainer.trainer(nqs, ham, qm, mc, grad, n_iterations, minimizer_type)
+nqs_positive = cond.NQSpositive(qs)
+ham = hm.Hamiltonian(omega, coulomb_interaction)
+qm = quam.QuantumModel(qs, ham, nqs_positive)
+mc = mcm.MCMethod(qm, np.random.seed())
+qs.initi(nqs_initialization, seed_1)
+t = trainer.Trainer(qs, ham, qm, mc, grad, n_iterations, minimizer_type)
 tic = time.perf_counter()
 t.train(number_of_samples)
 toc = time.perf_counter()
 print(account)
 print(f"Duracion total= {toc - tic:0.4f} seconds")
+
+
+
