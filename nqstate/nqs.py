@@ -102,10 +102,10 @@ class GaussianNQS:
         return self.sigmoid_q
 
     def derivative_sigmoid_q(self, q):
-        self.derivative_sigmoid_q = np.exp(q) / (
+        self.derivative_sigmoid_ = np.exp(q) / (
             (1 + np.exp(q)) * (1 + np.exp(q))
         )
-        return self.derivative_sigmoid_q
+        return self.derivative_sigmoid_
 
     def laplacian(self, visible_values_):
         """The functions compute the laplacian of the wave function"""
@@ -122,7 +122,7 @@ class GaussianNQS:
                 sum_term += (
                     self.weights_[i, j]
                     * self.weights_[i, j]
-                    * self.derivative_sigmoid_q[j]
+                    * self.derivative_sigmoid_[j]
                 )
             derivative2_ln_psi = -1.0 / self.sigma_2_ + sum_term / (
                 self.sigma_2_ * self.sigma_2_
@@ -136,7 +136,7 @@ class GaussianNQS:
             )
         return laplacian
 
-    def laplacian_alfa(self, visible_values_, sigmoid_q):
+    def laplacian_alfa(self, visible_values_):
         # The function calculates 1 / psi * derivative_psi / dalpha_i,
         #  this is the derived wave function with respect
         # to the network parameters a_i, b_j and w_ij
@@ -149,13 +149,13 @@ class GaussianNQS:
             ) / self.sigma_2_
             # print(k)
         for k in range(self.n_visible_, self.n_visible_ + self.n_hidden):
-            derivative_psi[k] = sigmoid_q[k - self.n_visible_]
+            derivative_psi[k] = self.sigmoid_q[k - self.n_visible_]
             # print(k,self.sigmoid_q[k-self.n_visible],k-self.n_visible)
         k = self.n_visible_ + self.n_hidden
         for i in range(self.n_visible_):
             for j in range(self.n_hidden):
                 derivative_psi[k] = (
-                    self.visible_values_[i] * sigmoid_q[j] / self.sigma_2_
+                    self.visible_values_[i] * self.sigmoid_q[j] / self.sigma_2_
                 )
                 k = k + 1
         return derivative_psi * self.positive
@@ -181,10 +181,10 @@ class GaussianNQS:
                 inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
         return inverse_distances
 
-    def calogero(self, x):
+    def calogero(self, visible_values_):
         # calculates the term of calogero model
         distance_particle = (
-            (x[0] - x[1]) * (x[0] - x[1])
+            (visible_values_[0] - visible_values_[1]) * (visible_values_[0] - visible_values_[1])
         ) + self.d  # particle distance squared
         g = 2 + 2 * self.d
         calogeno = g / (distance_particle)
