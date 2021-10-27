@@ -76,6 +76,3 @@ t.train(number_of_samples)
 toc = time.perf_counter()
 print(account)
 print(f"Duracion total= {toc - tic:0.4f} seconds")
-
-
-
