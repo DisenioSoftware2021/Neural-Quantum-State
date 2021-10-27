@@ -18,7 +18,9 @@ class NQSpositive:
         self.a = nqs.a
         self.w = nqs.w
         self.x = nqs.x
-        self.sig = nqs.sig
+
+        self.sigma = nqs.sigma
+
         self.h = nqs.h
 
         self.normal_distance = np.zeros([])
@@ -34,7 +36,7 @@ class NQSpositive:
         # The function returns the conditional probability distribution
         # of each value of x given the value of h
         x_mean = self.nqs.a[i] + np.dot(self.nqs.w[i, :], self.h)
-        return np.random.normal(x_mean, self.sig)
+        return np.random.normal(x_mean, self.sigma)
 
     def gibbs(self, seed_2):
         # The function samples a new configuration of positions

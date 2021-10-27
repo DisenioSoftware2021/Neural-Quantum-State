@@ -37,7 +37,6 @@ n_particles = 2
 n_dimensions = 2
 n_hidden = 4
 seed_1 = np.random.seed()
-
 # Method
 # The number of Gibbs samples to be performed is indicated
 number_of_samples = int(1e5)
