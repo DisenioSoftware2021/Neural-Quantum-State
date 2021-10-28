@@ -12,7 +12,7 @@
 # =============================================================================
 
 """
-NQS.
+Neura-Quantum-State/NQS.
 
 Represents a quantum state using the restricted Boltzmann machine.         <----------- OJO CON ESTO, CAMBIAR
 """
