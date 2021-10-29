@@ -62,7 +62,7 @@ gamma = 0.0
 # The classes are called and the program is executed with the parameters
 # specified above.
 
-qs = nqs.NQS(n_hidden, n_dimensions, n_particles, sigma,d)
+qs = nqs.NQS(n_hidden, n_dimensions, n_particles, sigma, d)
 grad = gradi.Gradient(learning_rate, gamma, qs)
 
 nqs_positive = cond.NQSpositive(qs)
@@ -76,6 +76,3 @@ t.train(number_of_samples)
 toc = time.perf_counter()
 print(account)
 print(f"Duracion total= {toc - tic:0.4f} seconds")
-
-
-

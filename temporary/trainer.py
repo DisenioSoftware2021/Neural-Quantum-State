@@ -29,16 +29,21 @@ class Trainer:
                 shift = self.grad.parameter_shift(
                     self.qm.get_gradient()
                 )  # I give as a parameter the energy gradient, and I calculate DGS
-                self.qm.shift_parameters(shift)  # I update the weights and bias
+                self.qm.shift_parameters(
+                    shift
+                )  # I update the weights and bias
 
             elif self.optimizer == "adam":
                 shift = self.grad.adam(
                     self.qm.get_gradient(), i + 1
                 )  # I give as a parameter the energy gradient, and I calculate Adam
-                self.qm.shift_parameters(shift)  # I update the weights and bias
+                self.qm.shift_parameters(
+                    shift
+                )  # I update the weights and bias
             else:
                 exit
                 # self.mc.run_mc(int(1e6),1)
         print(self.mc.account)
+
 
 # In[ ]:

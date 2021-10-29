@@ -32,8 +32,8 @@ class QuantumModel:
         self.x = condi.x
 
         self.parameters = (
-            self.n_visible + self.n_hidden + (self.n_visible * self.n_hidden
-        ))
+            self.n_visible + self.n_hidden + (self.n_visible * self.n_hidden)
+        )
         self.sigma = nqs.sigma
 
         self.energy_gradient = np.zeros(self.parameters)
@@ -89,7 +89,9 @@ class QuantumModel:
             self.local_energy_squared - self.local_energy * self.local_energy
         ) / sample_number
 
-        self.loc_energy_gradient = 2 * (self.energy_derivative_psi - self.local_energy * self.derivate_psi1)
+        self.loc_energy_gradient = 2 * (
+            self.energy_derivative_psi - self.local_energy * self.derivate_psi1
+        )
         self.loc_energy_gradient_norm = np.sqrt(
             np.dot(self.loc_energy_gradient, self.loc_energy_gradient)
         )
@@ -126,6 +128,3 @@ class QuantumModel:
 
     def get_gradient_norm(self):
         return self.loc_energy_gradient_norm
-
-
-

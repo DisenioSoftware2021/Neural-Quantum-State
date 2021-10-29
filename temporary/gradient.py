@@ -9,7 +9,7 @@ import numpy as np
 
 # In[4]:
 
- 
+
 class Gradient:
     def __init__(self, learning_rate, gamma, nqs):
         self.nqs = nqs
@@ -19,7 +19,7 @@ class Gradient:
         self.gamma = gamma
         self.parameter = (
             self.n_hidden + self.n_visible + (self.n_visible * self.n_hidden)
-        ) #dimension of the parameters 
+        )  # dimension of the parameters
         self.shift = np.zeros(self.parameter)
 
         self.epsilon = 1e-8
@@ -33,7 +33,7 @@ class Gradient:
         # The function computes the shift with which the network
         # parameters should be updated according to
         # the simple gradient descent algoirthm.
-        #the parameters are the weights and bias
+        # the parameters are the weights and bias
         self.shift = self.gamma * self.prev_shift + self.eta * gradient
         self.prev_shift = self.shift
 
@@ -58,7 +58,7 @@ class Gradient:
     def setup(self):
         self.prev_m = np.zeros(self.parameter)
         self.prev_s = np.zeros(self.parameter)
-        self.prev_shift = np.zeros(self.parameter)      
+        self.prev_shift = np.zeros(self.parameter)
 
 
 # In[ ]:

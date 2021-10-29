@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import NQS  
+import NQS
 
 vectorr_list = [
     [2.0, 2.0],
@@ -26,6 +26,6 @@ input_values = [
 def test_gaussian_nqs_exponential_argument(
     hidden, dim, partic, visible, expect
 ):
-    qs = nqs.GaussianNQS(hidden, dim, partic, 0.1, 1.0, seed=100)
+    qs = NQS.GaussianNQS(hidden, dim, partic, 0.1, 1.0, seed=100)
 
     assert np.allclose(qs.exponential_argument(visible), expect, atol=1e-7)

@@ -14,7 +14,7 @@
 """
 NQS.
 
-Represents a quantum state using the restricted Boltzmann machine.      
+Represents a quantum state using the restricted Boltzmann machine.         <----------- OJO CON ESTO, CAMBIAR
 """
 
 # =============================================================================
@@ -27,4 +27,19 @@ __version__ = "0.1.0"
 # =============================================================================
 # IMPORTS
 # =============================================================================
+
+from .core import *  # noqa
+
+from .condprobability1 import *  # noqa
+
+from .gradient import *  # noqa
+
+from .hamiltonian import *  # noqa
+
+from .mcmethod import *  # noqa
+
 from .nqs import *  # noqa
+
+from .quantumodel1 import *  # noqa
+
+from .trainer import *  # noqa
