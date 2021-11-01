@@ -136,7 +136,7 @@ class GaussianNQS:
             )
         return laplacian
 
-    def laplacian_alfa(self, visible_values_, sigmoid_q):
+    def laplacian_alfa(self, visible_values_):
         # The function calculates 1 / psi * derivative_psi / dalpha_i,
         #  this is the derived wave function with respect
         # to the network parameters a_i, b_j and w_ij
@@ -149,13 +149,13 @@ class GaussianNQS:
             ) / self.sigma_2_
             # print(k)
         for k in range(self.n_visible_, self.n_visible_ + self.n_hidden):
-            derivative_psi[k] = sigmoid_q[k - self.n_visible_]
+            derivative_psi[k] = self.sigmoid_q[k - self.n_visible_]
             # print(k,self.sigmoid_q[k-self.n_visible],k-self.n_visible)
         k = self.n_visible_ + self.n_hidden
         for i in range(self.n_visible_):
             for j in range(self.n_hidden):
                 derivative_psi[k] = (
-                    self.visible_values_[i] * sigmoid_q[j] / self.sigma_2_
+                    self.visible_values_[i] * self.sigmoid_q[j] / self.sigma_2_
                 )
                 k = k + 1
         return derivative_psi * self.positive
