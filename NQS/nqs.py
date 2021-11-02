@@ -1,6 +1,7 @@
 import attr
-import numpy as np
 from attr import validators as vldts
+
+import numpy as np
 
 
 @attr.s
