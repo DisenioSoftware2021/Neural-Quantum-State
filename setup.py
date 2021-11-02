@@ -57,7 +57,7 @@ setup(
     author_email="facundo.serrano@mi.unc.edu.ar",
     url="https://github.com/DisenioSoftware2021/Neural-Quantum-State",
     packages=[
-        "NQS_1",
+        "NQS",
     ],
     license="The MIT License",# <-------------------- CONSULTAR
     install_requires=REQUIREMENTS,
