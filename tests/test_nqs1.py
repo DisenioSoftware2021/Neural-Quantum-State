@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import NQS_1
+from NQS import nqs
 
 vectorr_list = [
     [2.0, 2.0],

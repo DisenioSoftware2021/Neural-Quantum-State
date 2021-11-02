@@ -12,9 +12,9 @@
 # =============================================================================
 
 """
-NQS.
+Neural-Quantum-State.
 
-Represents a quantum state using the restricted Boltzmann machine.         <----------- OJO CON ESTO, CAMBIAR
+Represents a quantum state using the restricted Boltzmann machine.
 """
 
 # =============================================================================
@@ -28,7 +28,7 @@ __version__ = "0.1.0"
 # IMPORTS
 # =============================================================================
 
-from .core import *  # noqa
+from .main import *  # noqa
 
 from .condprobability1 import *  # noqa
 

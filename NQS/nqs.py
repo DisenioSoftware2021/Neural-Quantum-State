@@ -14,7 +14,7 @@ class NQS:
     """Represents a quantum state using 
     the restricted Boltzmann machine."""
 
-    def __init__(self, n_hidden, n_dim, n_particles, sigma,d):
+    def __init__(self, n_hidden, n_dim, n_particles, sigma, d):
 
         self.n_dim = n_dim
         self.n_visible = n_dim * n_particles
@@ -158,3 +158,4 @@ class NQS:
         self.calogeno=g/(distance_particle)
         
         return self.calogeno
+        
