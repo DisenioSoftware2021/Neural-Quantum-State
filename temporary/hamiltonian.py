@@ -47,4 +47,3 @@ class Hamiltonian:
 
         self.harmonic_oscillator = np.dot(self.omega * self.omega * x, x)
         return self.harmonic_oscillator
-

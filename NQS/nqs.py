@@ -1,19 +1,77 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
+import attr
 import numpy as np
+from attr import validators as vldts
 
 
-# In[3]:
-
-
-class NQS:
-    """Represents a quantum state using 
+@attr.s
+class GaussianNQS:
+    """Represents a quantum state using
     the restricted Boltzmann machine."""
 
+    n_hidden = attr.ib(validator=vldts.instance_of(int))
+    n_dim = attr.ib(validator=vldts.instance_of(int))
+    n_particles = attr.ib(validator=vldts.instance_of(int))
+    sigma = attr.ib(validator=vldts.instance_of(float))
+    d = attr.ib(validator=vldts.instance_of(float))
+    seed = attr.ib(
+        default=None, validator=vldts.optional(vldts.instance_of(int))
+    )
+
+    init_mean = attr.ib(default=0.0, validator=vldts.instance_of(float))
+    init_sigma = attr.ib(default=0.1, validator=vldts.instance_of(float))
+    positive = attr.ib(default=0.5)
+
+    n_visible_ = attr.ib(init=False, repr=False)
+    random_ = attr.ib(init=False, repr=False)
+
+    visible_values_ = attr.ib(init=False, repr=False)
+    hidden_values_ = attr.ib(init=False, repr=False)
+
+    bias_a_ = attr.ib(init=False, repr=False)
+    bias_b_ = attr.ib(init=False, repr=False)
+    weights_ = attr.ib(init=False, repr=False)
+
+    sigma_2_ = attr.ib(init=False, repr=False)
+    sigmoid_q = attr.ib(init=False, repr=False)
+    derivative_sigmoid_q = attr.ib(init=False, repr=False)
+
+    @n_visible_.default
+    def _nvisible__default(self):
+        return self.n_dim * self.n_particles
+
+    @random_.default
+    def _random__default(self):
+        return np.random.default_rng(self.seed)
+
+    @bias_a_.default
+    def _bias_a__default(self):
+        return self.random_.normal(
+            self.init_mean, self.init_sigma, size=self.n_visible_
+        )
+
+    @bias_b_.default
+    def _bias_b__default(self):
+        return self.random_.normal(
+            self.init_mean, self.init_sigma, size=self.n_hidden
+        )
+
+    @weights_.default
+    def _weights_default(self):
+        return self.random_.normal(
+            self.init_mean,
+            self.init_sigma,
+            size=(self.n_visible_, self.n_hidden),
+        )
+
+    @visible_values_.default
+    def _visible_values__default(self):
+        return self.random_.random(self.n_visible_)
+
+    @sigma_2_.default
+    def _sigma_2__default(self):
+        return self.sigma * self.sigma
+
+<<<<<<< HEAD
     def __init__(self, n_hidden, n_dim, n_particles, sigma, d):
 
         self.n_dim = n_dim
@@ -41,112 +99,113 @@ class NQS:
         self.positive = 0.5
         self.calogeno = 0.0
         self.d        = 0.0
+=======
+    @sigmoid_q.default
+    def _sigmoid_q_default(self):
+        return np.zeros(self.n_hidden)
+>>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
 
-    def initi(self, inicial, seed):
+    @derivative_sigmoid_q.default
+    def _derivative_sigmoid_q_default(self):
+        return np.zeros(self.n_hidden)
 
-        if inicial == "normal":
+    def exponential_argument(self, visible_values_):
+        q = (
+            self.bias_b_
+            + (np.matmul(visible_values_, self.weights_)) / self.sigma_2_
+        )
+        return q
 
-            sigma_init = 0.1
-            for i in range(self.n_visible):
-                self.a[i] = np.random.normal(sigma_init)
-            for j in range(self.n_hidden):
-                self.b[j] = np.random.normal(sigma_init)
-            for i in range(self.n_visible):
-                for j in range(self.n_hidden):
-                    self.w[i, j] = np.random.normal(sigma_init)
-        elif str(inicial) == "uniform":
-
-            for i in range(self.n_visible):
-                self.a[i] = np.random.rand() - 1
-            for j in range(self.n_hidden):
-                self.b[j] = np.random.rand() - 1
-            for i in range(self.n_visible):
-                for j in range(self.n_hidden):
-                    self.w[i, j] = np.random.rand() - 1
-        else:
-            exit
-        for i in range(self.n_visible):
-            self.x[i] = np.random.rand() - 0.5
-
-        return self.a, self.x, self.b, self.w
-
-    def psi(self, x):
-        # Wave function
-        factor1 = np.dot(x - self.a, x - self.a)
-        factor1 = np.exp(-factor1 / (2.0 * self.sigma2))
-        factor2 = 1.0
-        self.q1 = self.b + (np.matmul(x, self.w)) / self.sigma2
+    def psi(self, visible_values_, q):
+        """wave function"""
+        factor_1 = np.dot(
+            visible_values_ - self.bias_a_, visible_values_ - self.bias_a_
+        )
+        factor_1 = np.exp(-factor_1 / (2.0 * self.sigma_2_))
+        factor_2 = 1.0
         for j in range(self.n_hidden):
-            factor2 *= 1 + np.exp(self.q1[j])
-        return np.sqrt(factor1 * factor2)
+            factor_2 *= 1 + np.exp(q[j])
+        return np.sqrt(factor_1 * factor_2)
 
-    def sigmoid(self, x):
-        self.Q = self.b + (np.matmul(x, self.w)) / self.sigma2
-        for j in range(self.n_hidden):
-            self.sigmoidQ[j] = 1 / (1 + np.exp(-self.Q[j]))
-        # print(self.sigmoidQ)
-        return self.sigmoidQ
+    def sigmoid(self, q):
+        self.sigmoid_q = 1 / (1 + np.exp(-np.array(q)))
+        return self.sigmoid_q
 
-    def derivative_sigmoid_Q(self):
-        for j in range(self.n_hidden):
-            self.derivative_sigmoidQ[j] = np.exp(self.Q[j]) / (
-                (1 + np.exp(self.Q[j])) * (1 + np.exp(self.Q[j]))
-            )
-        return self.derivative_sigmoidQ
+    def derivative_sigmoid_q(self, q):
+        self.derivative_sigmoid_q = np.exp(q) / (
+            (1 + np.exp(q)) * (1 + np.exp(q))
+        )
+        return self.derivative_sigmoid_q
 
-    def laplacian(self, x):
-        # The functions compute the laplacian of the wave function
+    def laplacian(self, visible_values_):
+        """The functions compute the laplacian of the wave function"""
 
         laplacian = 0.0
 
-        for i in range(self.n_visible):
-            derivative1_ln_psi = ((-x[i] + self.a[i]) / self.sigma2) + np.dot(
-                self.w[i, :], self.sigmoidQ
-            ) / self.sigma2
+        for i in range(self.n_visible_):
+            derivative1_ln_psi = (
+                (-visible_values_[i] + self.bias_a_[i]) / self.sigma_2_
+            ) + np.dot(self.weights_[i, :], self.sigmoid_q) / self.sigma_2_
             sum_term = 0.0
 
             for j in range(self.n_hidden):
-                sum_term += self.w[i, j] * self.w[i, j] * self.derivative_sigmoidQ[j]
-            derivative2_ln_psi = -1.0 / self.sigma2 + sum_term / (self.sigma2 * self.sigma2)
+                sum_term += (
+                    self.weights_[i, j]
+                    * self.weights_[i, j]
+                    * self.derivative_sigmoid_q[j]
+                )
+            derivative2_ln_psi = -1.0 / self.sigma_2_ + sum_term / (
+                self.sigma_2_ * self.sigma_2_
+            )
 
             derivative1_ln_psi *= self.positive
             derivative2_ln_psi *= self.positive
 
-            laplacian += -derivative1_ln_psi * derivative1_ln_psi - derivative2_ln_psi
+            laplacian += (
+                -derivative1_ln_psi * derivative1_ln_psi - derivative2_ln_psi
+            )
         return laplacian
 
-    def laplacian_alfa(self, x):
-        #The function calculates 1 / psi * derivative_psi / dalpha_i,
-        #  this is the derived wave function with respect 
+    def laplacian_alfa(self, visible_values_):
+        # The function calculates 1 / psi * derivative_psi / dalpha_i,
+        #  this is the derived wave function with respect
         # to the network parameters a_i, b_j and w_ij
-
-        for k in range(self.n_visible):
-            self.derivative_psi[k] = (x[k] - self.a[k]) / self.sigma2
+        derivative_psi = np.zeros(
+            self.n_visible_ + self.n_hidden + (self.n_visible_ * self.n_hidden)
+        )
+        for k in range(self.n_visible_):
+            derivative_psi[k] = (
+                visible_values_[k] - self.bias_a_[k]
+            ) / self.sigma_2_
             # print(k)
-        for k in range(self.n_visible, self.n_visible + self.n_hidden):
-            self.derivative_psi[k] = self.sigmoidQ[k - self.n_visible]
-            # print(k,self.sigmoidQ[k-self.n_visible],k-self.n_visible)
-        k = self.n_visible + self.n_hidden
-        for i in range(self.n_visible):
+        for k in range(self.n_visible_, self.n_visible_ + self.n_hidden):
+            derivative_psi[k] = self.sigmoid_q[k - self.n_visible_]
+            # print(k,self.sigmoid_q[k-self.n_visible],k-self.n_visible)
+        k = self.n_visible_ + self.n_hidden
+        for i in range(self.n_visible_):
             for j in range(self.n_hidden):
-                self.derivative_psi[k] = self.x[i] * self.sigmoidQ[j] / self.sigma2
+                derivative_psi[k] = (
+                    self.visible_values_[i] * self.sigmoid_q[j] / self.sigma_2_
+                )
                 k = k + 1
-        return self.derivative_psi * self.positive
+        return derivative_psi * self.positive
 
-    def inverse_distance(self, x):
+    def inverse_distance(self, visible_values_):
         # Computes the coulombian interaction term
         p1 = 0
+        inverse_distances = np.zeros([self.n_particles, self.n_particles])
 
         # Loop over each particle
-        for i1 in range(self.n_visible - self.n_dim, self.n_dim):
+        for i1 in range(self.n_visible_ - self.n_dim, self.n_dim):
             p2 = p1 + 1
             # Loop over each particles that particle r hasn't been paired with
-            for i2 in range(i1 + self.n_dim, self.n_visible, self.n_dim):
+            for i2 in range(i1 + self.n_dim, self.n_visible_, self.n_dim):
                 # if i2>self.n_visible:
                 #   break
-                distance_particle = 0 #particle distance squared
+                distance_particle = 0  # particle distance squared
                 # Loop over dimensions
                 for d in range(self.n_dim):
+<<<<<<< HEAD
                     distance_particle += (x[i1 + d] - x[i2 + d]) * (x[i1 + d] - x[i2 + d])
                 self.inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
         return self.inverse_distances
@@ -159,3 +218,20 @@ class NQS:
         
         return self.calogeno
         
+=======
+                    distance_particle += (
+                        visible_values_[i1 + d] - visible_values_[i2 + d]
+                    ) * (visible_values_[i1 + d] - visible_values_[i2 + d])
+                inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
+        return inverse_distances
+
+    def calogero(self, x):
+        # calculates the term of calogero model
+        distance_particle = (
+            (x[0] - x[1]) * (x[0] - x[1])
+        ) + self.d  # particle distance squared
+        g = 2 + 2 * self.d
+        calogeno = g / (distance_particle)
+
+        return calogeno
+>>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76

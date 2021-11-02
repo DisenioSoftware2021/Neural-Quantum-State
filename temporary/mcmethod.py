@@ -4,7 +4,7 @@
 # In[4]:
 
 # In[5]:
- 
+
 
 class MCMethod:
     def __init__(self, qm, seed):
@@ -26,7 +26,7 @@ class MCMethod:
             equilibration = False
             # Begins to calculate the energy values
 
-            if sample > (0.1 * sample_number):  
+            if sample > (0.1 * sample_number):
                 equilibration = True
             if equilibration is True:
                 self.qm.accumulator(self.qm.condi.x)
@@ -38,7 +38,11 @@ class MCMethod:
             effective_n_samples
         )  # Obtain the mean value of the energy and calculate the variance and gradient
 
-        print(f"valor de E= {self.qm.local_energy:0.9f}", self.qm.loc_energy_gradient_norm, nro)
+        print(
+            f"valor de E= {self.qm.local_energy:0.9f}",
+            self.qm.loc_energy_gradient_norm,
+            nro,
+        )
         # file.write(f"{self.qm.local_energy:0.7f}"+"  "+f"{self.qm.var:0.7e}"+"  "+
         # f"{np.sqrt(self.qm.var):0.7e}"+"  "+f"{self.qm.loc_energy_gradient_norm:0.7f}"+"  "
         # +f"{np.abs(self.qm.local_energy-2):0.7f}"+"  "+"  "+str(nro)+"\n")
