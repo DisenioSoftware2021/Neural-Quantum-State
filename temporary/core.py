@@ -5,13 +5,15 @@ import time
 
 import numpy as np
 
-import condprobability1 as cond
-import gradient as gradi
-import hamiltonian as hm
-import mcmethod as mcm
-import nqs
-import quantumodel1 as quam
-import trainer
+from . import (
+    condprobability1 as cond,
+    gradient as gradi,
+    hamiltonian as hm,
+    mcmethod as mcm,
+    nqs,
+    quantumodel1 as quam,
+    trainer,
+)
 
 # import GA1
 
@@ -67,7 +69,7 @@ grad = gradi.gradient(learning_rate, gamma, nqs)
 
 nqs_positive = cond.NQSpositive(nqs)
 ham = hm.hamiltonian(omega, coulomb_interaction)
-qm = quam.Quantummodel(nqs, ham, NQSpositive)
+qm = quam.Quantummodel(nqs, ham, nqs_positive)
 mc = mcm.mcmethod(qm, np.random.seed())
 nqs.initi(nqs_initialization, seed_1)
 t = trainer.trainer(nqs, ham, qm, mc, grad, n_iterations, minimizer_type)
