@@ -12,9 +12,13 @@
 # =============================================================================
 
 """
-NQS.
+Neural-Quantum-State.
 
+<<<<<<< HEAD
+Represents a quantum state using the restricted Boltzmann machine.
+=======
 Represents a quantum state using the restricted Boltzmann machine.      
+>>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
 """
 
 # =============================================================================

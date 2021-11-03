@@ -71,9 +71,39 @@ class GaussianNQS:
     def _sigma_2__default(self):
         return self.sigma * self.sigma
 
+<<<<<<< HEAD
+    def __init__(self, n_hidden, n_dim, n_particles, sigma, d):
+
+        self.n_dim = n_dim
+        self.n_visible = n_dim * n_particles
+        self.n_hidden = n_hidden
+        self.n_particles = n_particles
+
+        self.a = np.zeros(self.n_visible)
+        self.b = np.zeros(n_hidden)
+
+        self.x = np.zeros(self.n_visible)
+        self.h = np.zeros(n_hidden)
+
+        self.sigma = sigma
+        self.sigma2 = self.sigma * self.sigma
+        self.inverse_distances = np.zeros([n_particles, n_particles])
+        self.sigmoidQ = np.zeros(n_hidden) #funcion sigmoide
+        self.derivative_sigmoidQ = np.zeros(n_hidden)
+        self.w = np.zeros(
+            [self.n_visible, n_hidden]
+        )  # self.sigma*(np.random.rand(self.n_visible, n_hidden)-0.5)
+        self.derivative_psi = np.zeros(
+            self.n_visible + self.n_hidden + (self.n_visible * self.n_hidden)
+        )
+        self.positive = 0.5
+        self.calogeno = 0.0
+        self.d        = 0.0
+=======
     @sigmoid_q.default
     def _sigmoid_q_default(self):
         return np.zeros(self.n_hidden)
+>>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
 
     @derivative_sigmoid_q.default
     def _derivative_sigmoid_q_default(self):
@@ -175,6 +205,20 @@ class GaussianNQS:
                 distance_particle = 0  # particle distance squared
                 # Loop over dimensions
                 for d in range(self.n_dim):
+<<<<<<< HEAD
+                    distance_particle += (x[i1 + d] - x[i2 + d]) * (x[i1 + d] - x[i2 + d])
+                self.inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
+        return self.inverse_distances
+
+    def calogero(self,x):
+        #calculates the term of calogero model
+        distance_particle=((x[0]-x[1])*(x[0]-x[1]))+self.d #particle distance squared
+        g=2+2*self.d
+        self.calogeno=g/(distance_particle)
+        
+        return self.calogeno
+        
+=======
                     distance_particle += (
                         visible_values_[i1 + d] - visible_values_[i2 + d]
                     ) * (visible_values_[i1 + d] - visible_values_[i2 + d])
@@ -190,3 +234,4 @@ class GaussianNQS:
         calogeno = g / (distance_particle)
 
         return calogeno
+>>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76

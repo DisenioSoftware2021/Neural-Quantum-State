@@ -2,7 +2,11 @@ import NQS
 
 import numpy as np
 
+<<<<<<< HEAD
+from NQS import nqs
+=======
 import pytest
+>>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
 
 vectorr_list = [
     [2.0, 2.0],
