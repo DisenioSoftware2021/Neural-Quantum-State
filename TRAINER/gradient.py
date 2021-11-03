@@ -2,12 +2,11 @@
 # coding: utf-8
 
 # In[3]:
-
-import math
-
-import numpy as np
+import attr
 from attr import validators as vldts
 
+import math
+import numpy as np
 
 
 # In[4]:
@@ -21,19 +20,22 @@ class Gradient:
     n_hidden = attr.ib(validator=vldts.instance_of(int)) # nqs.n_hidden
     n_visible = attr.ib(validator=vldts.instance_of(int)) # nqs.n_visible
     
-    bias_shift_ =  attr.ib(init=False, repr=False) # np.zeros(parameter)
     epsilon_ = attr.ib(default=1e-8) # 1e-8
     beta_1_ = attr.ib(default=0.9) # 0.9
     beta_2_ = attr.ib(default=0.99) # 0.99
-    bias_m_ =  attr.ib(init=False, repr=False) # np.zeros(parameter)
-    bias_s_ =  attr.ib(init=False, repr=False) # np.zeros(parameter)
-    bias_squared_ =  attr.ib(init=False, repr=False) # np.zeros(parameter)
+     
+    shift =  attr.ib(init=False, repr=False) # np.zeros(parameter)
+    # m =  attr.ib(init=False, repr=False) # np.zeros(parameter)
+    # s =  attr.ib(init=False, repr=False) # np.zeros(parameter)
+    # squared =  attr.ib(init=False, repr=False) # np.zeros(parameter)
         
+    @shift.default
+    def _shift_default(self):
+        return np.zeros(self.parameter)
+
     @n_parameter_.default
     def _parameter__default(self):
-        return (
-            self.n_hidden + self.n_visible + (self.n_visible * self.n_hidden)
-        ) #dimension of the parameters 
+        return self.n_hidden+self.n_visible+(self.n_visible*self.n_hidden)
 
     def parameter_shift(self, gradient):
         # The function computes the shift with which the network
@@ -46,19 +48,20 @@ class Gradient:
         return -self.shift
 
     def adam(self, gradient, iteration):
-        self.m = self.beta_1 * self.prev_m + (1 - self.beta_1) * gradient
+        squared =  np.zeros(self.parameter)
+        m = self.beta_1 * self.prev_m + (1 - self.beta_1) * gradient
         for i in range(0, self.parameter):
-            self.squared[i] = gradient[i] * gradient[i]
+            squared[i] = gradient[i] * gradient[i]
 
-        self.s = self.beta_2 * self.prev_s + (1 - self.beta_2) * self.squared
-        self.prev_m = self.m
-        self.prev_s = self.s
+        s = self.beta_2 * self.prev_s + (1 - self.beta_2) * squared
+        self.prev_m = m
+        self.prev_s = s
 
-        self.m = self.m / (1 - math.pow(self.beta_1, iteration))
-        self.s = self.s / (1 - math.pow(self.beta_2, iteration))
+        m = m / (1 - math.pow(self.beta_1, iteration))
+        s = s / (1 - math.pow(self.beta_2, iteration))
         # print(prev_m[1],)
         for i in range(0, self.parameter):
-            self.shift[i] = self.m[i] / (np.sqrt(self.s[i]) + self.epsilon)
+            self.shift[i] = m[i] / (np.sqrt(s[i]) + self.epsilon)
         return -self.eta * self.shift
 
     def setup(self):
