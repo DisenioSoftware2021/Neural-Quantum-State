@@ -177,4 +177,4 @@ def test_gaussian_nqs_calogero(hidden, dim, partic, visible, expect_calogero):
     qs = NQS.GaussianNQS(hidden, dim, partic, 0.1, 1.0, seed=100)
 
     assert np.allclose(qs.calogero(visible), expect_calogero, atol=1e-7)
-
+    
