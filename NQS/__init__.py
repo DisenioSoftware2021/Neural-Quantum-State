@@ -29,4 +29,6 @@ __version__ = "0.1.0"
 # IMPORTS
 # =============================================================================
 
+from .gradient import *  # noqa
+
 from .nqs import *  # noqa
