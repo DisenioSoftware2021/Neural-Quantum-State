@@ -165,9 +165,9 @@ class GaussianNQS:
         # Computes the coulombian interaction term
         p1 = 0
         inverse_distances = np.zeros([self.n_particles, self.n_particles])
-
         # Loop over each particle
-        for i1 in range(self.n_visible_ - self.n_dim, self.n_dim):
+        print(self.n_visible_ - self.n_dim, self.n_dim)
+        for i1 in range(0, self.n_visible_ - self.n_dim, self.n_dim):
             p2 = p1 + 1
             # Loop over each particles that particle r hasn't been paired with
             for i2 in range(i1 + self.n_dim, self.n_visible_, self.n_dim):
@@ -175,7 +175,7 @@ class GaussianNQS:
                 #   break
                 distance_particle = 0  # particle distance squared
                 # Loop over dimensions
-                for d in range(self.n_dim):
+                for d in range(0, self.n_dim):
                     distance_particle += (
                         visible_values_[i1 + d] - visible_values_[i2 + d]
                     ) * (visible_values_[i1 + d] - visible_values_[i2 + d])

@@ -276,11 +276,18 @@ def test_gaussian_nqs_laplacian_alfa(
     assert np.allclose(qs.laplacian_alfa(visible), expect_lap_alfa, atol=1e-7)
 
 
-expected_list_inverse_distance = [0.0, 0.0, 0.0]
+vectorr_list_dist = [
+    [2.0, 1.0],
+    [2.0, 2.0, 3.0],
+    [1.0, 2.0, 3.0, 4.0],
+]
+
+
+expected_list_inverse_distance = [0.0, 0.0, [[0, 0.35355339], [0, 0]]]
 input_values_inverse_distance = [
-    (2, 2, 1, vectorr_list[0], expected_list_inverse_distance[0]),
-    (3, 3, 1, vectorr_list[1], expected_list_inverse_distance[1]),
-    (4, 2, 2, vectorr_list[2], expected_list_inverse_distance[2]),
+    (2, 2, 1, vectorr_list_dist[0], expected_list_inverse_distance[0]),
+    (3, 3, 1, vectorr_list_dist[1], expected_list_inverse_distance[1]),
+    (4, 2, 2, vectorr_list_dist[2], expected_list_inverse_distance[2]),
 ]
 
 
