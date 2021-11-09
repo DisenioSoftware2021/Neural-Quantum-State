@@ -102,7 +102,7 @@ class GaussianNQS:
         self.sigmoid_q = 1 / (1 + np.exp(-np.array(q)))
         return self.sigmoid_q
 
-    def derivative_sigmoid_q(self, q):
+    def derivative_sigmoid(self, q):
         self.derivative_sigmoid_q = np.exp(q) / (
             (1 + np.exp(q)) * (1 + np.exp(q))
         )

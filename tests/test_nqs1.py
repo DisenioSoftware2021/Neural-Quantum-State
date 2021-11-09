@@ -134,7 +134,7 @@ input_values_der_sigmoid = [
 def test_gaussian_nqs_der_sigmoid(hidden, dim, partic, q, expect_der_sig):
     qs = NQS.GaussianNQS(hidden, dim, partic, 0.1, 1.0, seed=100)
 
-    assert np.allclose(qs.derivative_sigmoid_q(q), expect_der_sig, atol=1e-7)
+    assert np.allclose(qs.derivative_sigmoid(q), expect_der_sig, atol=1e-7)
 
 
 expected_list_laplacian = [
@@ -176,7 +176,7 @@ input_values_laplacian = [
 def test_gausssian_nqs_laplacian(hidden, dim, partic, visible, q, expect_lap):
     qs = NQS.GaussianNQS(hidden, dim, partic, 0.1, 1.0, seed=100)
     qs.sigmoid(q)
-    qs.derivative_sigmoid_q(q)
+    qs.derivative_sigmoid(q)
 
     assert np.allclose(qs.laplacian(visible), expect_lap, atol=1e-7)
 
