@@ -100,8 +100,3 @@ class Trainer:
                 exit
                 # self.mc.run_mc(int(1e6),1)
         print(self.mc.account)
-
-
-# In[ ]:
->>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76:temporary/trainer.py
->>>>>>> main
