@@ -184,13 +184,8 @@ class GaussianNQS:
 
     def calogero(self, visible_values_):
         # calculates the term of calogero model
-        distance_particle = (
-<<<<<<< HEAD
-            (visible_values_[0] - visible_values_[1]) * (visible_values_[0] - visible_values_[1])
-=======
-            (visible_values_[0] - visible_values_[1])
-            * (visible_values_[0] - visible_values_[1])
->>>>>>> b46e0e224ac2a5285b7b634f059d39d67a80e680
+        distance_particle = (visible_values_[0] - visible_values_[1]) * (
+            visible_values_[0] - visible_values_[1]
         ) + self.d  # particle distance squared
         g = 2 + 2 * self.d
         calogeno = g / (distance_particle)
