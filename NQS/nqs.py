@@ -182,10 +182,10 @@ class GaussianNQS:
                 inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
         return inverse_distances
 
-    def calogero(self, x):
+    def calogero(self, visible_values_):
         # calculates the term of calogero model
         distance_particle = (
-            (x[0] - x[1]) * (x[0] - x[1])
+            (visible_values_[0] - visible_values_[1]) * (visible_values_[0] - visible_values_[1])
         ) + self.d  # particle distance squared
         g = 2 + 2 * self.d
         calogeno = g / (distance_particle)
