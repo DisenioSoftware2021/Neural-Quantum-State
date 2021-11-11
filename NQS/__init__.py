@@ -30,4 +30,6 @@ __version__ = "0.1.0"
 
 from .gradient import *  # noqa
 
+from .hamiltonian import *  # noqa
+
 from .nqs import *  # noqa
