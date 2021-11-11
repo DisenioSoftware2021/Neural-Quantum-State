@@ -175,38 +175,19 @@ class GaussianNQS:
                 #   break
                 distance_particle = 0  # particle distance squared
                 # Loop over dimensions
-<<<<<<< HEAD
-                for d in range(self.n_dim):
-<<<<<<< HEAD
-                    distance_particle += (x[i1 + d] - x[i2 + d]) * (x[i1 + d] - x[i2 + d])
-                self.inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
-        return self.inverse_distances
-
-    def calogero(self,x):
-        #calculates the term of calogero model
-        distance_particle=((x[0]-x[1])*(x[0]-x[1]))+self.d #particle distance squared
-        g=2+2*self.d
-        self.calogeno=g/(distance_particle)
-        
-        return self.calogeno
-        
-=======
-=======
                 for d in range(0, self.n_dim):
->>>>>>> a7b4781cb4ae1a2598a06cb7ae9c173f06cbebe9
                     distance_particle += (
                         visible_values_[i1 + d] - visible_values_[i2 + d]
                     ) * (visible_values_[i1 + d] - visible_values_[i2 + d])
                 inverse_distances[p1, p2] = 1.0 / np.sqrt(distance_particle)
         return inverse_distances
 
-    def calogero(self, x):
+    def calogero(self, visible_values_):
         # calculates the term of calogero model
         distance_particle = (
-            (x[0] - x[1]) * (x[0] - x[1])
+            (visible_values_[0] - visible_values_[1]) * (visible_values_[0] - visible_values_[1])
         ) + self.d  # particle distance squared
         g = 2 + 2 * self.d
         calogeno = g / (distance_particle)
 
         return calogeno
->>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
