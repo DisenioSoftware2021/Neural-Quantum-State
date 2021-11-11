@@ -4,46 +4,37 @@
 # In[1]:
 
 
+import attr
 import numpy as np
+from attr import validators as vldts
 
 # In[10]:
 
 
+@attr.s
 class Hamiltonian:
-    def __init__(self, omega, include_interaction):
-
-        self.include_interaction = include_interaction
-        self.omega = omega
-
-    def potential_oscillator(self, x):
-        # The function calculates the potential energy of the harmonic
-        # oscillator of the system  for a given configuration of the
-        # particles of the system
-
-        self.harmonic_oscillator = np.dot(self.omega * self.omega * x, x)
-        return self.harmonic_oscillator
+    omega = attr.ib(validator=vldts.instance_of(float))
+    include_interaction = attr.ib(validator=vldts.instance_of(str))
 
     def local_energy(self, nqs):
         # The function computes the energy of the system described by
         # the wave function of the NQS object, and according to the
         # type of Hamiltonian you choose
 
-        harmonic_oscillator = self.potential_oscillator(nqs.x)
+        harmonic_oscillator = np.dot(self.omega * self.omega * nqs.visible_values_, nqs.visible_values_)
+        # harmonic_oscillator = self.potential_oscillator(nqs.visible_values_)
         # self.harmonicosc
-        kinetic = nqs.laplacian(nqs.x)
+        kinetic = nqs.laplacian(nqs.visible_values_)
 
         local_energy = 0.5 * (kinetic + harmonic_oscillator)
 
         if self.include_interaction == "harmonic_oscillator":
             local_energy = local_energy
         elif self.include_interaction == "coulomb":
-            local_energy += np.sum(nqs.inverse_distance(nqs.x))
+            local_energy += np.sum(nqs.inverse_distance(nqs.visible_values_))
         elif self.include_interaction == "calogero":
-            local_energy += nqs.calogero(nqs.x)
+            local_energy += nqs.calogero(nqs.visible_values_)
         else:
             print("error")
             exit
         return local_energy
-
-        self.harmonic_oscillator = np.dot(self.omega * self.omega * x, x)
-        return self.harmonic_oscillator

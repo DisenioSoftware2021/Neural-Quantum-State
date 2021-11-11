@@ -1,6 +1,7 @@
 import attr
-import numpy as np
 from attr import validators as vldts
+
+import numpy as np
 
 
 @attr.s
@@ -71,39 +72,9 @@ class GaussianNQS:
     def _sigma_2__default(self):
         return self.sigma * self.sigma
 
-<<<<<<< HEAD
-    def __init__(self, n_hidden, n_dim, n_particles, sigma, d):
-
-        self.n_dim = n_dim
-        self.n_visible = n_dim * n_particles
-        self.n_hidden = n_hidden
-        self.n_particles = n_particles
-
-        self.a = np.zeros(self.n_visible)
-        self.b = np.zeros(n_hidden)
-
-        self.x = np.zeros(self.n_visible)
-        self.h = np.zeros(n_hidden)
-
-        self.sigma = sigma
-        self.sigma2 = self.sigma * self.sigma
-        self.inverse_distances = np.zeros([n_particles, n_particles])
-        self.sigmoidQ = np.zeros(n_hidden) #funcion sigmoide
-        self.derivative_sigmoidQ = np.zeros(n_hidden)
-        self.w = np.zeros(
-            [self.n_visible, n_hidden]
-        )  # self.sigma*(np.random.rand(self.n_visible, n_hidden)-0.5)
-        self.derivative_psi = np.zeros(
-            self.n_visible + self.n_hidden + (self.n_visible * self.n_hidden)
-        )
-        self.positive = 0.5
-        self.calogeno = 0.0
-        self.d        = 0.0
-=======
     @sigmoid_q.default
     def _sigmoid_q_default(self):
         return np.zeros(self.n_hidden)
->>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
 
     @derivative_sigmoid_q.default
     def _derivative_sigmoid_q_default(self):
@@ -131,7 +102,7 @@ class GaussianNQS:
         self.sigmoid_q = 1 / (1 + np.exp(-np.array(q)))
         return self.sigmoid_q
 
-    def derivative_sigmoid_q(self, q):
+    def derivative_sigmoid(self, q):
         self.derivative_sigmoid_q = np.exp(q) / (
             (1 + np.exp(q)) * (1 + np.exp(q))
         )
@@ -194,9 +165,9 @@ class GaussianNQS:
         # Computes the coulombian interaction term
         p1 = 0
         inverse_distances = np.zeros([self.n_particles, self.n_particles])
-
         # Loop over each particle
-        for i1 in range(self.n_visible_ - self.n_dim, self.n_dim):
+        print(self.n_visible_ - self.n_dim, self.n_dim)
+        for i1 in range(0, self.n_visible_ - self.n_dim, self.n_dim):
             p2 = p1 + 1
             # Loop over each particles that particle r hasn't been paired with
             for i2 in range(i1 + self.n_dim, self.n_visible_, self.n_dim):
@@ -204,6 +175,7 @@ class GaussianNQS:
                 #   break
                 distance_particle = 0  # particle distance squared
                 # Loop over dimensions
+<<<<<<< HEAD
                 for d in range(self.n_dim):
 <<<<<<< HEAD
                     distance_particle += (x[i1 + d] - x[i2 + d]) * (x[i1 + d] - x[i2 + d])
@@ -219,6 +191,9 @@ class GaussianNQS:
         return self.calogeno
         
 =======
+=======
+                for d in range(0, self.n_dim):
+>>>>>>> a7b4781cb4ae1a2598a06cb7ae9c173f06cbebe9
                     distance_particle += (
                         visible_values_[i1 + d] - visible_values_[i2 + d]
                     ) * (visible_values_[i1 + d] - visible_values_[i2 + d])
