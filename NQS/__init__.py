@@ -14,11 +14,7 @@
 """
 Neural-Quantum-State.
 
-<<<<<<< HEAD
-Represents a quantum state using the restricted Boltzmann machine.
-=======
 Represents a quantum state using the restricted Boltzmann machine.      
->>>>>>> 4debeb4c1aeaf76ba09c2f40c20719eeec821d76
 """
 
 # =============================================================================
@@ -31,4 +27,9 @@ __version__ = "0.1.0"
 # =============================================================================
 # IMPORTS
 # =============================================================================
+
+from .gradient import *  # noqa
+
+from .hamiltonian import *  # noqa
+
 from .nqs import *  # noqa
