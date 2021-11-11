@@ -30,7 +30,7 @@ from setuptools import setup  # noqa
 PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
 
-REQUIREMENTS = ["numpy", "attrs"]# <----------------- CAMBIOS
+REQUIREMENTS = ["numpy", "attrs"]  # <----------------- CAMBIOS
 
 with open(PATH / "NQS" / "__init__.py") as fp:
     for line in fp.readlines():
@@ -50,7 +50,7 @@ with open("README.md") as fp:
 setup(
     name="NQS",
     version=VERSION,
-    description="Represents a quantum state using the restricted Boltzmann machine",
+    description="Represents a quantum state using the RBM",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     author="Facundo Serrano",
@@ -59,11 +59,15 @@ setup(
     packages=[
         "NQS",
     ],
-    license="The MIT License",# <-------------------- CONSULTAR
+    license="The MIT License",  # <-------------------- CONSULTAR
     install_requires=REQUIREMENTS,
-    keywords=["Quantum State", "Machine Learning", "Restricted Boltzmann Machine"],
+    keywords=[
+        "Quantum State",
+        "Machine Learning",
+        "Restricted Boltzmann Machine",
+    ],
     classifiers=[
-        "Development Status :: 4 - Beta",#         <----------- OJO CON ESTO, CAMBIAR
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
