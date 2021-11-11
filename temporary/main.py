@@ -30,7 +30,7 @@ import trainer
 
 # model
 omega = 1.0
-sigma = 1 / np.sqrt(2 * omega)
+# sigma = 1 / np.sqrt(2 * omega) <--------- Pasó a calcularse en nqs
 coulomb_interaction = "harmonic_oscillator"
 nqs_initialization = "normal"
 n_particles = 2
