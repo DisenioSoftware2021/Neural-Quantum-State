@@ -4,10 +4,15 @@ from attr import validators as vldts
 import numpy as np
 
 
+INTERACTIONS = {
+    "harmonic_oscillator": lambda nqs: 0,
+    "coulomb": lambda nqs: np.sum(nqs.inverse_distance(nqs.visible_values_)),
+    "calogero": lambda nqs: nqs.calogero(nqs.visible_values_),
+}
 @attr.s
 class Hamiltonian:
     omega = attr.ib(validator=vldts.instance_of(float))
-    include_interaction = attr.ib(validator=vldts.instance_of(str))
+    include_interaction = attr.ib(validator=vldts.in_(INTERACTIONS))
 
     def local_energy(self, nqs):
         # The function computes the energy of the system described by
@@ -22,13 +27,8 @@ class Hamiltonian:
 
         local_energy = 0.5 * (kinetic + harmonic_oscillator)
 
-        if self.include_interaction == "harmonic_oscillator":
-            local_energy = local_energy
-        elif self.include_interaction == "coulomb":
-            local_energy += np.sum(nqs.inverse_distance(nqs.visible_values_))
-        elif self.include_interaction == "calogero":
-            local_energy += nqs.calogero(nqs.visible_values_)
-            print(nqs.visible_values_, nqs.calogero(nqs.visible_values_))
-        else:
-            raise AssertionError("Método no válido")
+        iinteraction_function = INTERACTIONS[self.include_interaction]
+        local_energy += iinteraction_function(nqs)
+
         return local_energy
+        

@@ -61,12 +61,6 @@ input_values_calogero = [
     (omega[2], "calogero", 1 / np.sqrt(2 * omega[2]), expected_calogero[2]),
 ]
 
-input_values_sarasa = [
-    "sarasa",
-    "caloger",
-    "culomb",
-]
-
 
 @pytest.mark.parametrize(
     "omega,interaction,sigma,expected_harmonic", input_values_harmonic
@@ -101,13 +95,3 @@ def test_calogero(omega, interaction, sigma, expected_calogero):
     ham = NQS.Hamiltonian(omega, interaction)
 
     assert np.allclose(ham.local_energy(qs), expected_calogero, atol=1e-7)
-
-
-@pytest.mark.parametrize("interaction", input_values_sarasa)
-def test_sarasa(interaction):
-    qs = NQS.GaussianNQS(2, 1, 2, 1.0, 1.0, seed=100)
-
-    ham = NQS.Hamiltonian(1.0, interaction)
-
-    with pytest.raises(AssertionError):
-        ham.local_energy(qs)
